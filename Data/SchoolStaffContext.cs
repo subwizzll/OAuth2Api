@@ -1,40 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using SchoolStaffApi.Models;
+using SchoolStaffAPI.Models;
 
-namespace SchoolStaffApi.Data
+namespace SchoolStaffAPI.Data;
+
+public sealed class SchoolStaffContext(DbContextOptions<SchoolStaffContext> options) : DbContext(options)
 {
-    public class SchoolStaffContext : DbContext
+    public DbSet<User> Users { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public SchoolStaffContext(DbContextOptions<SchoolStaffContext> options) 
-            : base(options) { }
-
-        public DbSet<User> Users { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Email)
-                    .IsRequired()
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.PhoneNumber)
-                    .IsRequired()
-                    .HasMaxLength(15);
-
-                entity.Property(e => e.DateOfBirth)
-                    .IsRequired();
-            });
-        }
+        modelBuilder.Entity<User>(entity => entity.HasKey(e => e.Id));
     }
-} 
+}

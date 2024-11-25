@@ -1,6 +1,14 @@
-@SchoolStaffAPI_HostAddress = http://localhost:5225
+@SchoolStaffAPI_HostAddress = http://localhost:5225/api
 
-GET {{SchoolStaffAPI_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{SchoolStaffAPI_HostAddress}}/user/register
+Content-Type: application/json
 
-###
+{
+  "UserName": "subwizzll",
+  "FirstName": "Richard",
+  "LastName": "Kotch",
+  "DateOfBirth": "01-01-1963",
+  "PhoneNumber": "555-555-1234",
+  "Email": "test@123.com",
+  "Password": "YourSecurePassword123!"
+}
