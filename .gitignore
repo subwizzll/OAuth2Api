@@ -9,9 +9,6 @@ obj/
 *.userosscache
 *.sln.docstates
 
-# Ignore Rider files
-.idea/
-
 # Ignore NuGet packages
 *.nupkg
 *.snupkg
@@ -70,3 +67,10 @@ _ReSharper*/
 *.csproj.user
 *.csproj.DotSettings
 *.csproj.DotSettings.user
+.DS_Store
+/http-client.private.env.json
+
+
+# Ignore environment variables
+.env
+.env.*

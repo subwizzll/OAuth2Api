@@ -7,14 +7,7 @@ namespace SchoolStaffAPI.Models;
 public class User
 {
     [Key]
-    public int Id { get; init; }
-
-    [Required]
-    [MinLength(2)]
-    [MaxLength(50)]
-    [RegularExpression(@"^[a-zA-Z0-9_.]+$",
-        ErrorMessage = "Username can only contain letters, numbers, underscores, and periods.")]
-    public required string UserName { get; set; }
+    public int Id { get; set; }
 
     [Required]
     [MinLength(2)]
@@ -37,14 +30,14 @@ public class User
     public required string DateOfBirth { get; set; }
 
     [Required]
-    [EmailAddress]
-    [MaxLength(100)]
-    public required string Email { get; set; }
-
-    [Required]
     [Phone]
     [MaxLength(15)]
     public required string PhoneNumber { get; set; }
+
+    [Required]
+    [EmailAddress]
+    [MaxLength(100)]
+    public required string Email { get; set; }
 
     [Required]
     [MaxLength(100)]

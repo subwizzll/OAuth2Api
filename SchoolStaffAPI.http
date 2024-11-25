@@ -1,14 +1,24 @@
-@SchoolStaffAPI_HostAddress = http://localhost:5225/api
+@host = http://localhost:5225/api
 
-POST {{SchoolStaffAPI_HostAddress}}/user/register
+### Login
+POST {{host}}/user/login
 Content-Type: application/json
 
 {
-  "UserName": "subwizzll",
-  "FirstName": "Richard",
-  "LastName": "Kotch",
-  "DateOfBirth": "01-01-1963",
-  "PhoneNumber": "555-555-1234",
-  "Email": "test@123.com",
-  "Password": "YourSecurePassword123!"
+  "email": "test@123.com",
+  "password": "YourSecurePassword123!"
+}
+
+### Register new user (requires admin token)
+POST {{host}}/user/register
+Content-Type: application/json
+Authorization: Secret {{secret}}
+
+{
+  "firstName": "Richard",
+  "lastName": "Kotch",
+  "dateOfBirth": "01-01-1963",
+  "phoneNumber": "555-555-1234",
+  "email": "test@123.com",
+  "password": "YourSecurePassword123!"
 }
