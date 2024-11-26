@@ -10,7 +10,7 @@ using SchoolStaffAPI.Data;
 
 namespace SchoolStaffApi.Migrations
 {
-    [DbContext(typeof(SchoolStaffContext))]
+    [DbContext(typeof(UserContext))]
     [Migration("20241125004615_UpdateUserModel")]
     partial class UpdateUserModel
     {

@@ -1,4 +1,4 @@
-namespace SchoolStaffAPI.Models;
+namespace SchoolStaffAPI.Models.Requests;
 
 public sealed class LoginRequest
 {

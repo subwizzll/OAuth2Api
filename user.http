@@ -1,0 +1,68 @@
+@host = http://localhost:5225/api
+
+### Register new user (requires admin token)
+POST {{host}}/user/register
+Content-Type: application/json
+Authorization: Secret {{secret}}
+
+{
+  "firstName": "Jake",
+  "lastName": "Smith",
+  "dateOfBirth": "01-01-1963",
+  "phoneNumber": "555-555-1234",
+  "email": "Smith@JakeBiz.com",
+  "password": "YourSecurePassword123!"
+}
+
+### Login
+# @name login
+POST {{host}}/user/login
+Content-Type: application/json
+
+{
+  "email": "Smith@JakeBiz.com",
+  "password": "YourSecurePassword123!"
+}
+
+> {%
+    client.global.set("accessToken", response.body.access_token);
+    client.global.set("refreshToken", response.body.refresh_token);
+%}
+
+### Refresh Token
+# @name refresh
+POST {{host}}/user/refresh
+Content-Type: application/json
+Authorization: Bearer {{refreshToken}}
+
+#{
+#  "token": "{{refreshToken}}"
+#}
+
+> {%
+    client.global.set("accessToken", response.body.access_token);
+    client.global.set("refreshToken", response.body.refresh_token);
+%}
+
+### Revoke Current Token
+POST {{host}}/user/revoke
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "token": "{{refreshToken}}"
+}
+
+> {%
+    client.global.set("accessToken", "");
+    client.global.set("refreshToken", "");
+%}
+
+### Logout (using current token)
+POST {{host}}/user/logout
+Authorization: Bearer {{accessToken}}
+
+> {%
+    client.global.set("accessToken", "");
+    client.global.set("refreshToken", "");
+%}

@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using SchoolStaffAPI.Validations;
 
-namespace SchoolStaffAPI.Models;
+namespace SchoolStaffAPI.Models.Entity;
 
 public class User
 {

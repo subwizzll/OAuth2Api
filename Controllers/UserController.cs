@@ -1,20 +1,16 @@
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
-using SchoolStaffAPI.Data;
 using SchoolStaffAPI.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
+using SchoolStaffAPI.Models.Entity;
+using SchoolStaffAPI.Models.Requests;
+using SchoolStaffAPI.Services;
 
 namespace SchoolStaffAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class UserController(SchoolStaffContext context, IConfiguration configuration) : ControllerBase
+public class UserController(TokenService tokenService, UserService userService) : ControllerBase
 {
     [HttpPost("register")]
     [Authorize(AuthenticationSchemes = "Secret", Policy = "RequireSecret")]
@@ -23,18 +19,7 @@ public class UserController(SchoolStaffContext context, IConfiguration configura
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        // Hash the password
-        var passwordBytes = SHA256.HashData(Encoding.UTF8.GetBytes(user.Password));
-        var builder = new StringBuilder();
-
-        foreach (var b in passwordBytes)
-            builder.Append(b.ToString("x2"));
-
-        user.Password = builder.ToString();
-
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
-
+        await userService.RegisterUserAsync(user);
         return Ok(new { message = "User registered successfully" });
     }
 
@@ -42,45 +27,54 @@ public class UserController(SchoolStaffContext context, IConfiguration configura
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var user = await context.Users
-            .FirstOrDefaultAsync(u => u.Email == request.Email);
+        var (errorMessage, user) = await userService.ValidateUserAsync(request.Email, request.Password);
 
-        if (user == null)
-            return Unauthorized(new { message = "Invalid username or password" });
+        if (errorMessage != null)
+            return Unauthorized(new { message = errorMessage });
 
-        // Hash the provided password and compare
-        var hashedPassword = Convert.ToHexString(
-SHA256.HashData(Encoding.UTF8.GetBytes(request.Password))).ToLower();
+        var (accessToken, refreshToken) = await tokenService.GenerateTokensAsync(user!);
 
-        if (user.Password != hashedPassword)
-            return Unauthorized(new { message = "Invalid username or password" });
-
-        var token = GenerateJwtToken(user);
-
-        return Ok(new { token });
+        return Ok(new { 
+            access_token = accessToken,
+            refresh_token = refreshToken
+        });
     }
 
-    private string GenerateJwtToken(User user)
+    [HttpPost("refresh")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Refresh(string token)
     {
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.Name, user.Email),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString())
-        };
+        var result = await tokenService.RefreshTokenAsync(token);
+        
+        if (result == null)
+            return Unauthorized(new { message = "Invalid refresh token" });
 
-        var keyString = configuration.GetValue<string>("Jwt:Key") ?? throw new InvalidOperationException("JWT Key is not configured.");
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var token = new JwtSecurityToken(
-            issuer: configuration["Jwt:Issuer"],
-            audience: configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddHours(1),
-            signingCredentials: credentials
-        );
+        var (accessToken, refreshToken) = result.Value;
+        
+        return Ok(new {
+            access_token = accessToken,
+            refresh_token = refreshToken
+        });
+    }
 
-        var responseToken = new JwtSecurityTokenHandler().WriteToken(token);
+    [HttpPost("revoke")]
+    public async Task<IActionResult> Revoke(string token)
+    {
+        await tokenService.RevokeRefreshTokenAsync(token);
+        return Ok(new { message = "Token revoked successfully" });
+    }
 
-        return responseToken;
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var refreshToken = Request.Cookies["refresh_token"];
+
+        if (refreshToken != null)
+            await tokenService.RevokeRefreshTokenAsync(refreshToken);
+        
+        // Clear the refresh token cookie if it exists
+        Response.Cookies.Delete("refresh_token");
+        
+        return Ok(new { message = "Logged out successfully" });
     }
 }

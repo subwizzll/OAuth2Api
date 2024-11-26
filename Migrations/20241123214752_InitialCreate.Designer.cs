@@ -11,7 +11,7 @@ using SchoolStaffAPI.Data;
 
 namespace SchoolStaffApi.Migrations
 {
-    [DbContext(typeof(SchoolStaffContext))]
+    [DbContext(typeof(UserContext))]
     [Migration("20241123214752_InitialCreate")]
     partial class InitialCreate
     {
