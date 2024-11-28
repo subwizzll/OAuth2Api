@@ -20,7 +20,3 @@ Make sure your `.env.local` file contains the following variables:
 - `JWT_ISSUER`: JWT issuer
 - `JWT_AUDIENCE`: JWT audience
 - `CONNECTION_STRING`: Database connection string
-
-### Running the Application
-
-[Add instructions for running the application here] 
