@@ -3,12 +3,11 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using SchoolStaffAPI.Data;
-using SchoolStaffAPI.Models;
+using OAuth2Api.Data;
 using Microsoft.EntityFrameworkCore;
-using SchoolStaffAPI.Models.Entity;
+using OAuth2Api.Models.Entity;
 
-namespace SchoolStaffAPI.Services;
+namespace OAuth2Api.Services;
 
 public class TokenService(IConfiguration configuration, UserContext context)
 {
@@ -31,14 +30,14 @@ public class TokenService(IConfiguration configuration, UserContext context)
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        var keyString = configuration.GetValue<string>("Jwt:Key") ??
+        var keyString = configuration.GetValue<string>("JWT_KEY") ??
             throw new InvalidOperationException("JWT Key is not configured.");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         
         var token = new JwtSecurityToken(
-            issuer: configuration["Jwt:Issuer"],
-            audience: configuration["Jwt:Audience"],
+            issuer: configuration["JWT_ISSUER"],
+            audience: configuration["JWT_AUDIENCE"],
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(15), // Short-lived access token
             signingCredentials: credentials

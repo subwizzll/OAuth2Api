@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SchoolStaffAPI.Data;
+using OAuth2Api.Data;
 
 #nullable disable
 
-namespace SchoolStaffApi.Migrations
+namespace OAuth2Api.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20241125205837_AddRefreshTokens")]
-    partial class AddRefreshTokens
+    [Migration("20241128182452_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace SchoolStaffApi.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SchoolStaffAPI.Models.RefreshToken", b =>
+            modelBuilder.Entity("OAuth2Api.Models.Entity.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,7 +72,7 @@ namespace SchoolStaffApi.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("SchoolStaffAPI.Models.User", b =>
+            modelBuilder.Entity("OAuth2Api.Models.Entity.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,9 +115,9 @@ namespace SchoolStaffApi.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SchoolStaffAPI.Models.RefreshToken", b =>
+            modelBuilder.Entity("OAuth2Api.Models.Entity.RefreshToken", b =>
                 {
-                    b.HasOne("SchoolStaffAPI.Models.User", "User")
+                    b.HasOne("OAuth2Api.Models.Entity.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

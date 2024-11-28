@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using SchoolStaffAPI.Models;
 using Microsoft.AspNetCore.Authorization;
-using SchoolStaffAPI.Models.Entity;
-using SchoolStaffAPI.Models.Requests;
-using SchoolStaffAPI.Services;
+using OAuth2Api.Models.Entity;
+using OAuth2Api.Services;
 
-namespace SchoolStaffAPI.Controllers;
+namespace OAuth2Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -19,15 +17,19 @@ public class UserController(TokenService tokenService, UserService userService) 
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        await userService.RegisterUserAsync(user);
-        return Ok(new { message = "User registered successfully" });
+        var (errorMessage, _) = await userService.RegisterUserAsync(user);
+
+        if (errorMessage != null)
+            return BadRequest(new { message = errorMessage });
+
+        return Ok(new { message = "User registered successfully", user});
     }
 
     [HttpPost("login")]
     [AllowAnonymous]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] string email, [FromBody] string password)
     {
-        var (errorMessage, user) = await userService.ValidateUserAsync(request.Email, request.Password);
+        var (errorMessage, user) = await userService.ValidateUserAsync(email, password);
 
         if (errorMessage != null)
             return Unauthorized(new { message = errorMessage });

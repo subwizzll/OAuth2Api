@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using SchoolStaffAPI.Validations;
+using OAuth2Api.Validations;
 
-namespace SchoolStaffAPI.Models.Entity;
+namespace OAuth2Api.Models.Entity;
 
 public class User
 {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SchoolStaffAPI.Models.Entity;
+namespace OAuth2Api.Models.Entity;
 
 public sealed class RefreshToken
 {

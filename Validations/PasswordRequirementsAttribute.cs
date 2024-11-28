@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace SchoolStaffAPI.Validations;
+namespace OAuth2Api.Validations;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 public class PasswordRequirementsAttribute : ValidationAttribute

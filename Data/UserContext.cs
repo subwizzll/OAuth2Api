@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SchoolStaffAPI.Models;
-using SchoolStaffAPI.Models.Entity;
+using OAuth2Api.Models.Entity;
 
-namespace SchoolStaffAPI.Data;
+namespace OAuth2Api.Data;
 
 public sealed class UserContext(DbContextOptions<UserContext> options) : DbContext(options)
 {

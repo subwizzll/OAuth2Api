@@ -74,3 +74,6 @@ _ReSharper*/
 # Ignore environment variables
 .env
 .env.*
+
+# include local environment variables
+!.env.local

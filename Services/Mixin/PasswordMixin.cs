@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SchoolStaffAPI.Services.Mixin;
+namespace OAuth2Api.Services.Mixin;
 
 public abstract class PasswordMixin
 {

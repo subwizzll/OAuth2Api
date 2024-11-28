@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-namespace SchoolStaffAPI.Auth;
+namespace OAuth2Api.Auth;
 
 public class SecretAuthenticationHandler(
     IOptionsMonitor<AuthenticationSchemeOptions> options,
